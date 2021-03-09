@@ -1,28 +1,37 @@
 <script lang="ts">
 	import { Navbar, NavbarBrand, NavbarToggler, Nav, NavItem, NavLink, Collapse } from 'sveltestrap';
 	import { url, layout } from '@roxi/routify';
+	import { whitelistedRoutes } from '$/routes';
+	import { user as userStore } from '$/stores/user';
+
+	$: user = $userStore;
 
 	let isOpen = false;
 </script>
 
-<div>
-	<Navbar dark color="dark" expand="md">
-		<NavbarBrand href="/">Navbar</NavbarBrand>
-		<NavbarToggler on:click={() => (isOpen = !isOpen)} />
-		<Collapse {isOpen} navbar expand="md">
-			<Nav navbar class="ml-auto">
-				{#each $layout.children as node}
+<Navbar dark color="dark" expand="md" class="sticky-top">
+	<NavbarBrand href="/">Navbar</NavbarBrand>
+	<NavbarToggler on:click={() => (isOpen = !isOpen)} />
+	<Collapse {isOpen} navbar expand="md">
+		<Nav navbar class="ml-auto">
+			{#each $layout.children as { path, title }}
+				{#if user || whitelistedRoutes.some((route) => $url(path) == $url(route))}
 					<NavItem>
-						<NavLink href={$url(node.path)}>{node.title}</NavLink>
+						<NavLink href={$url(path)}>{title}</NavLink>
 					</NavItem>
-				{/each}
-			</Nav>
-		</Collapse>
-	</Navbar>
-</div>
+				{/if}
+			{/each}
+			{#if user}
+				<NavItem>
+					<NavLink disabled>Bonjour {user.firstname}!</NavLink>
+				</NavItem>
+			{/if}
+		</Nav>
+	</Collapse>
+</Navbar>
 
 <style>
-	div :global(.nav-link) {
+	:global(.nav-link) {
 		text-transform: capitalize;
 	}
 </style>

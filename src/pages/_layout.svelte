@@ -1,15 +1,20 @@
 <script lang="ts">
-	import { Container } from 'sveltestrap';
 	import Navbar from './_components/Navbar.svelte';
-	import { metatags, page } from '@roxi/routify';
+	import Footer from './_components/Footer.svelte';
+	import { Container } from 'sveltestrap';
+	import { metatags, page, isActive } from '@roxi/routify';
 	import { capitalize } from '$/utils';
 
-	metatags.template('title', (title: string) => `${title ? `${title} - ` : ''}Template`);
+	import decorator from './_loginDecorator.svelte';
+
+	metatags.template('title', (title: string) => `${title ? `${title} - ` : ''}Progression Scoute`);
 	$: metatags.title = capitalize($page.title);
 </script>
 
 <Navbar />
 
-<Container class="d-flex flex-column align-items-center">
-	<slot />
+<Container>
+	<slot {decorator} />
 </Container>
+
+<Footer />
